@@ -4,7 +4,7 @@ class ContactService {
         this.Contact = client.db().collection("contacts");
     }
 // Định nghĩa các phương thức truy xuất CSDL sử dụng mongodb API
-    extractContactData(payload) {
+    extractConactData(payload) {
         const contact = {
             name: payload.name,
             email: payload.email,
@@ -19,7 +19,7 @@ class ContactService {
         return contact;
     }
     async create(payload) {
-        const contact = this.extractContactData(payload);
+        const contact = this.extractConactData(payload);
         const result = await this.Contact.findOneAndUpdate(
             contact,
             { $set: { favorite: contact.favorite === true } },
@@ -42,6 +42,19 @@ class ContactService {
         return await this.Contact.findOne({
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         });
+    }
+
+    async update(id, payload) {
+        const filter = {
+            _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+        };
+        const update = this.extractConactData(payload);
+        const result = await this.Contact.findOneAndUpdate(
+            filter,
+            { $set: update },
+            { returnDocument: "after" }
+        );
+        return result.value;
     }
 }
 
