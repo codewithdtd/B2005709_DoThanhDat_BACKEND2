@@ -110,12 +110,41 @@ exports.delete = async (req, res, next) => {
     }
 }
 
-exports.deleteAll = (req, res) => {
-    res.send({ message: "deleteAll handler" });
-};
+// exports.deleteAll = (req, res) => {
+//     res.send({ message: "deleteAll handler" });
+// };
 
-exports.findAllFavorite = (req, res) => {
-    res.send({ message: "findAllFavorite handler" });
-};
+exports.findAllFavorite = async (_req, res, next) => {
+    try {
+        const contactService = new ContactService(MongoDB.client);
+        const documents = await contactService.findFavorite();
+        return res.send(documents);
+    } catch (error) {
+        return next (
+            new ApiError(
+                500, "An error while retrieving favorite contacts"
+            )
+        )
+    }
+}
 
+
+// exports.findAllFavorite = (req, res) => {
+//     res.send({ message: "findAllFavorite handler" });
+// };
+exports.deleteAll = async (_req, res, next) => {
+    try {
+        const contactService = new ContactService(MongoDB.client);
+        const deletedCount = await contactService.deleteAll();
+        return res.send({
+            message: `${deletedCount} contacts were delete successfully`,
+        })
+    } catch (error) {
+        return next (
+            new ApiError(
+                500, "An error while retrieving favorite contacts"
+            )
+        )
+    }
+}
 
