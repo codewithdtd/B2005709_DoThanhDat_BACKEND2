@@ -25,7 +25,7 @@ class ContactService {
             { $set: { favorite: contact.favorite === true } },
             { returnDocument: "after", upsert: true }
         );
-        return result.value;
+        return result;
     }
 
     async find(filter) {
@@ -54,14 +54,14 @@ class ContactService {
             { $set: update },
             { returnDocument: "after" }
         );
-        return result.value;
+        return result;
     }
 
     async delete(id) {
         const result = await this.Contact.findOneAndDelete({
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         });
-        return result.value;
+        return result;
     }
 
     async findFavorite() {
